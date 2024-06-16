@@ -1,15 +1,60 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" style="text-align: center;">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light" />
     <link rel="stylesheet" href="style.scss">
-    <title>Hello world!</title>
+    <title>Wetter</title>
+    <link rel="icon" type="image/x-icon" href="weather.ico">
   </head>
   <body>
-    <main class="container">
-      <h1>Hello world!</h1>
+    <header class="container" style="width: 75vw;">
+      <h1>Wetter Service</h1>
+    </header>
+    <main class="container" style="width: 75vw;">
+      <section>
+        <details class="dropdown" id="place-dropdown">
+          <summary>Ort</summary>
+          <ul id="place-list">
+            <li><a href="#">Brandenburg an der Havel</a></li>
+            <li><a href="#">Potsdam</a></li>
+            <li><a href="#">Berlin</a></li>
+            <li><a href="#">Werder (Havel)</a></li>
+            <li><a href="#">Bad Belzig</a></li>
+            <li><a href="#">Rathenow</a></li>
+          </ul>
+        </details>
+          <label>
+            Breitengrad
+            <input id="latitude" style="text-align: center;" />
+          </label>
+          <label>
+            Längengrad
+            <input id="longitude" style="text-align: center;" />
+          </label>
+        <button id="button">Los!</button>
+      </section>
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Temperatur (°C)</th>
+              <th scope="col">Niederschlag (l/m²)</th>
+              <th scope="col">Wind (km/h)</th>
+              <th scope="col">Sonnenuntergang (ISO)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" id="temperature"></th>
+              <td id="precipitation"></td>
+              <td id="wind"></td>
+              <td id="sunset"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     </main>
   </body>
+  <script src="index.js" type="module"></script>
 </html>

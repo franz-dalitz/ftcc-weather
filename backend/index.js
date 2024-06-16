@@ -2,11 +2,14 @@
 // requires
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors')
 const axios = require('axios');
 const redis = require("redis");
 
 // initialization
 const app = express();
+app.use(cors());
+
 const cache = redis.createClient({
   url: `rediss://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
   password: process.env.REDIS_PASSWORD
@@ -39,7 +42,7 @@ async function getWeatherData(latitude, longitude) {
   // in case nothing was cached get data from meteomatics
   console.debug('no data was found in cache for location, requesting data from meteomatics');
   const datetime = new Date().toISOString();
-  const parameters = 'wind_speed_10m:ms,wind_dir_10m:d,t_2m:C,precip_1h:mm,sunrise:sql,sunset:sql,msl_pressure:hPa,weather_symbol_1h:idx'
+  const parameters = 't_2m:C,precip_1h:mm,wind_speed_10m:ms,sunset:sql'
   const url = `https://api.meteomatics.com/${datetime}/${parameters}/${location}/json`
   const response = await axios.get(url, {
     headers: {
@@ -51,7 +54,8 @@ async function getWeatherData(latitude, longitude) {
   // convert data from meteomatics' object to a simplified format
   data = {}
   response.data.data.forEach(element => {
-    data[element.parameter] = element.coordinates[0].dates[0].value;
+    const dataKey = DATA_MAPPING[element.parameter];
+    data[dataKey] = element.coordinates[0].dates[0].value;
   });
   console.debug(`meteomatics data: ${JSON.stringify(data)}`);
 
@@ -61,6 +65,13 @@ async function getWeatherData(latitude, longitude) {
   console.debug(`redis status: ${status}`);
   return data;
 }
+
+const DATA_MAPPING = Object.freeze({
+  't_2m:C': 'temperature',
+  'precip_1h:mm': 'precipitation',
+  'wind_speed_10m:ms': 'wind',
+  'sunset:sql': 'sunset'
+});
 
 // start backend server
 app.listen(PORT, () => {
