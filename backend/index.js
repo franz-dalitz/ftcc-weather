@@ -55,7 +55,9 @@ async function getWeatherData(latitude, longitude) {
   data = {}
   response.data.data.forEach(element => {
     const dataKey = DATA_MAPPING[element.parameter];
-    data[dataKey] = element.coordinates[0].dates[0].value;
+    let value = element.coordinates[0].dates[0].value;
+    if (dataKey == 'sunset') value = value.replace(/.*(..:..):00.*/, '$1');
+    data[dataKey] = value;
   });
   console.debug(`meteomatics data: ${JSON.stringify(data)}`);
 
