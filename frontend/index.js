@@ -37,12 +37,37 @@ placeList.addEventListener('click', event => {
 
 // call backend on confirmation to retrieve weather data
 button.addEventListener('click', async () => {
-  button.setAttribute("aria-busy", true);
   const latitude = latitudeInput.value;
   const longitude = longitudeInput.value;
+
+  console.log(`attempting to fetch weather data for ${latitude},${longitude}`);
+
+  if (!latitude.match(/^\d+\.*\d*$/) || !longitude.match(/^\d+\.*\d*$/)) {
+    const msg = "latitude or longitude did not match coordinate format";
+    alert(msg);
+    console.log(msg);
+    return;
+  }
+
+  button.setAttribute("aria-busy", true);
   const url = `http://${process.env.BACKEND_IP}:${process.env.BACKEND_PORT}/${latitude}/${longitude}`;
-  for (const [key, value] of Object.entries((await axios.get(url)).data)) {
+  let data;
+
+  try {
+    const response = await axios.get(url);
+    data = response.data;
+    console.log("data fetching was successful");
+  }
+  catch(err) {
+    alert("failed to fetch weather data from server");
+    console.log(err);
+    button.setAttribute("aria-busy", false);
+    return;
+  }
+
+  for (const [key, value] of Object.entries(data)) {
     TABLE_ELEMENTS[key].innerText = value;
   }
+
   button.setAttribute("aria-busy", false);
 });
