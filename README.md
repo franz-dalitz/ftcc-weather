@@ -20,8 +20,19 @@ herzustellen und Daten darin zu speichern und abzurufen.
 Erläutern Sie am Beispiel der Wetterdaten die möglichen Nachteile von Caching, gehen Sie auf die Aspekte Geschwindigkeit, Daten, Kosten, Sicherheit sowie Nutzererfahrung ein.:
 
 - Geschwindigkeit
-  - 
+  - overhead/error handling von implementierung könnte geschw. ausgleichen oder sogar verschlechtern
+  - kann auch cache-misses geben, dann ausschließlich langsamer durch zusätzl. logik
+  - netzwerkprobleme relevant bei verteiltem cache
 - Daten
+  - wenn sich daten oft ändern schwer konsistent zu halten (invalidierungs-strategien)
 - Kosten
+  - cache muss am laufen gehalten / gepflegt werden
+  - besonders wenn memory basiert teuer zu skalieren
+  - wenn daten nur selten angefragt werden lohnt sich wahrsch. nicht
 - Sicherheit
+  - zusätzl. netzwerk-kommunikation => angreifbarer
+  - zusätzl. software / komponenten => mehr anfällige teile
+  - zusätzl. code für implementierung => mehr mögl. für human error
 - Nutzererfahrung
+  - möglw. inkonsistente ladezeiten? (manchmal schnell, manchmal langsam)
+  - möglw. manchmal error durch daten-inkonsistenz
