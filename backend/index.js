@@ -6,10 +6,11 @@ const cors = require('cors')
 const axios = require('axios');
 const redis = require("redis");
 
-// initialization
+// initialize express app
 const app = express();
 app.use(cors());
 
+// set up redis connection
 const cache = redis.createClient({
   url: `rediss://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
   password: process.env.REDIS_PASSWORD
@@ -19,14 +20,14 @@ const cache = redis.createClient({
 const PORT = 8080;
 const EXPIRATION_SECONDS = 3600;
 
-// route frontend weather requests
+// route frontend weather requests to handler-like function
 app.get('/:latitude/:longitude', async (req, res) => {
   res.send(await getWeatherData(req.params.latitude, req.params.longitude));
 });
 
-// weather fetching function
+// weather fetching
 async function getWeatherData(latitude, longitude) {
-  // construct location
+  // construct location / cache key from parameters
   const location = latitude + ',' + longitude;
   console.debug(`getting weather data for ${location}`);
 
@@ -51,7 +52,7 @@ async function getWeatherData(latitude, longitude) {
     }
   });
 
-  // convert data from meteomatics' object to a simplified format
+  // convert data from meteomatics' object to a simplified custom object
   data = {}
   response.data.data.forEach(element => {
     const dataKey = DATA_MAPPING[element.parameter];
